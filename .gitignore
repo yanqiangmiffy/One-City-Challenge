@@ -1,0 +1,10 @@
+*.npy
+data/
+*.json
+*.h5
+cache_dir/
+models/
+others/
+outputs/
+*.txt
+runs/
