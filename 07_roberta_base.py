@@ -15,8 +15,8 @@ def get_clean(text):
     r1 = '[a-zA-Z]+'
     text = re.sub(r1, '', text)
     return text[:300]
-train_df=pd.read_csv('data/train_set_v6.csv')
-test=pd.read_csv('data/test_set_v6.csv')
+train_df=pd.read_csv('data/train_set_v3.csv')
+test=pd.read_csv('data/test_set_v3.csv')
 train_df['text']=train_df['text'].apply(lambda x:get_clean(x))
 test['text']=test['text'].apply(lambda x:get_clean(x))
 print(test['text'])
@@ -49,10 +49,7 @@ model_args.overwrite_output_dir = True
 
 model = ClassificationModel(
         "bert",
-        "hfl/chinese-roberta-wwm-ext",
-        #"bert",
-        #"voidful/albert_chinese_base",
-        #"hfl/chinese-roberta-wwm-ext-large",
+        "clue/roberta_chinese_base",
         num_labels=len(df_label),
         args=model_args)
 
@@ -80,5 +77,5 @@ sub.drop(['label_n'], axis=1, inplace=True)
 print(sub.shape)
 print(sub.head(10))
 
-np.save('result/chinese-roberta-wwm-ext_p6.npy', raw_outputs)
-sub.to_csv('result/chinese-roberta-wwm-ext_p6.csv', index=False)
+np.save('result/07_roberta_base.npy', raw_outputs)
+sub.to_csv('result/07_roberta_base.csv', index=False)

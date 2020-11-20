@@ -8,3 +8,4 @@ others/
 outputs/
 *.txt
 runs/
+logs/

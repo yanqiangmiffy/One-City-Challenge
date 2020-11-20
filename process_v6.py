@@ -32,33 +32,36 @@ test['text'] = test['filename'].apply(lambda x: clean_text(x))
 
 def get_file_content(filename):
     table_path = 'data/' + filename
-    r1 = '[0-9’!"#$%&\'()）*+-./:;,<=>?@。?★、…【】《》？“”‘’！[\\]^_`{|}~]+'
+    r1 = '[a-zA-Z0-9’!"#$%&\'()）*+-./:;,<=>?@。?★、…【】《》？“”‘’！[\\]^_`{|}~]+'
     if filename.endswith('xls'):
         try:
             with open(table_path, 'r', encoding='utf-8') as f:
                 text = "".join(f.read().split())
                 text = re.sub(r1, '', text)
                 print("读取xls方式[open]成功", table_path)
-                return text[:300]
+                return text.split('\n')[0][:300]
         except UnicodeDecodeError as e:
             try:
                 df = pd.read_excel(table_path)
                 print("读取xls方式[read_excel]成功", table_path)
                 if len(df) == 0:
-                    data = pd.DataFrame()
+                    text=''
                     tmp_xls = pd.ExcelFile(table_path)
                     sheet_names = tmp_xls.sheet_names
+                    text+=''.join(sheet_names)
                     for name in sheet_names:
                         d = tmp_xls.parse(name)
-                        data = pd.concat([data, d])
-                    text = data.to_string()
-                    text = "".join(text.split())
+                        text+=''.join(d.columns)
                     text = re.sub(r1, '', text)
                     text = text.replace('NaN', '').replace('\n', '')
                     # print(text)
                     return text[:300]
                 else:
-                    text = df.to_string()
+                    text=''
+                    tmp_xls = pd.ExcelFile(table_path)
+                    sheet_names = tmp_xls.sheet_names
+                    text+=''.join(sheet_names)
+                    text += df.to_string()[:300]
                     text = "".join(text.split())
                     text = re.sub(r1, '', text)
                     text = text.replace('NaN', '').replace('\n', '')
@@ -117,7 +120,7 @@ if __name__ == '__main__':
     # print(train_df['label'].value_counts())
     # print(test)
 
-    train_df.to_csv('data/train_set_v3.csv', index=None)
-    test_df.to_csv('data/test_set_v3.csv', index=None)
+    train_df.to_csv('data/train_set_v6.csv', index=None)
+    test_df.to_csv('data/test_set_v6.csv', index=None)
 
 
