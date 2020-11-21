@@ -16,10 +16,9 @@ roberta_p6=np.load('result/chinese-roberta-wwm-ext_p6.npy')
 elec=np.load('result/04_chinese-electra-base-discriminator.npy')
 longformer=np.load('result/05_longformer-chinese-base-4096.npy')
 elec_gen=np.load('result/06_chinese-electra-base-gen.npy')
+roberta_base=np.load('result/07_roberta_base.npy')
 
-
-pred=xlnet+albert+roberta_p3+roberta_p6+elec+longformer+elec_gen
-
+pred=xlnet+roberta_p3+roberta_p6+elec+longformer+roberta_base
 #print(xlnet)
 #print(pred)
 #pred=elec

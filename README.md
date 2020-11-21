@@ -8,13 +8,15 @@
 ## 模型
 
 - xlnet  0.982250
-- electra-base-discriminator 0.97+
-- chinese-roberta-wwm-ext 0.984450
 - albert_chinese_base 0.96
+- chinese-roberta-wwm-ext 0.984450
+- chinese-roberta-wwm-ext_p6 0.98+
+- electra-base-discriminator 0.97+ 
 - longformer-chinese-base 0.9825
 - hfl/chinese-electra-base-generator 0.93
 
 融合：
-- xlnet+electra-base-discriminator+chinese-roberta-wwm-ext+albert_chinese_base：0.986375
-- xlnet+electra-base-discriminator+chinese-roberta-wwm-ext+albert_chinese_base+longformer-chinese-base：0.98575
+- xlnet+albert+roberta_www_p3+chinese_roberta_p6:0.985=65
+- xlnet+electra-base-discriminator+chinese-roberta-wwm-ext+albert_chinese_base+elec：0.986375
+- xlnet+electra-base-discriminator+chinese-roberta-wwm-ext+albert_chinese_base++eleclongformer-chinese-base：0.98575
 - xlnet+electra-base-discriminator+chinese-roberta-wwm-ext+albert_chinese_base+longformer-chinese-base+hfl/chinese-electra-base-generator：0.9855

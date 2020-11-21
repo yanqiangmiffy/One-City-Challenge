@@ -48,10 +48,12 @@ def get_file_content(filename):
                     text=''
                     tmp_xls = pd.ExcelFile(table_path)
                     sheet_names = tmp_xls.sheet_names
+                    print(sheet_names)
                     text+=''.join(sheet_names)
                     for name in sheet_names:
                         d = tmp_xls.parse(name)
                         text+=''.join(d.columns)
+                        print(d.columns)
                     text = re.sub(r1, '', text)
                     text = text.replace('NaN', '').replace('\n', '')
                     # print(text)
@@ -60,6 +62,7 @@ def get_file_content(filename):
                     text=''
                     tmp_xls = pd.ExcelFile(table_path)
                     sheet_names = tmp_xls.sheet_names
+                    print(sheet_names)
                     text+=''.join(sheet_names)
                     text += df.to_string()[:300]
                     text = "".join(text.split())
