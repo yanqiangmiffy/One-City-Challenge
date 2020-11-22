@@ -125,5 +125,3 @@ if __name__ == '__main__':
 
     train_df.to_csv('data/train_set_v6.csv', index=None)
     test_df.to_csv('data/test_set_v6.csv', index=None)
-
-

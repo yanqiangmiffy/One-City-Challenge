@@ -14,6 +14,7 @@ from simpletransformers.classification import ClassificationModel, Classificatio
 def get_clean(text):
     r1 = '[a-zA-Z]+'
     text = re.sub(r1, '', text)
+    text = text.replace('\\', '')
     return text[:300]
 train_df=pd.read_csv('data/train_set_v6.csv')
 test=pd.read_csv('data/test_set_v6.csv')
