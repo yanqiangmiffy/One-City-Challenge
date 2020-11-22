@@ -50,6 +50,7 @@ def build_model(emb, seq_len):
         output_dim=emb.shape[1],
         input_length=seq_len
     )
+    print(emb.shape)
 
     seq = tf.keras.layers.Input(shape=(seq_len,))
     seq_emb = emb_layer(seq)
@@ -105,11 +106,13 @@ if __name__ == "__main__":
         text = re.sub(r1, '', text)
         # text = re.sub(r'(年)\1+', r'\1', text)
         text = text.replace('\\', '')
-        return text[:1000]
+        return text
 
 
     def tokenizer(text):
-        return " ".join([w for w in jieba.cut(text) if w])
+        text=" ".join([w for w in jieba.cut(text) if w])
+        text=" ".join(text.split())
+        return text
 
 
     train_df['text'] = train_df['text'].apply(lambda x: get_clean(x))
@@ -180,7 +183,7 @@ if __name__ == "__main__":
 
         earlystopping = tf.keras.callbacks.EarlyStopping(monitor=monitor, patience=10, verbose=1, mode='max')
         reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor=monitor, factor=0.5, patience=2, mode='max', verbose=1)
-
+        print(embedding.shape)
         model = build_model(embedding, seq_len)
         model.fit(train_x, train_y, batch_size=batch_size, epochs=20,
                   validation_data=(val_x, val_y),
