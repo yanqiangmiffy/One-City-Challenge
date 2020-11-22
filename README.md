@@ -14,9 +14,12 @@
 - electra-base-discriminator 0.97+ 
 - longformer-chinese-base 0.9825
 - hfl/chinese-electra-base-generator 0.93
-
+- chinese-roberta-wwm-ext_p3.csv 0.9845+
 融合：
 - xlnet+albert+roberta_www_p3+chinese_roberta_p6:0.985=65
 - xlnet+electra-base-discriminator+chinese-roberta-wwm-ext+albert_chinese_base+elec：0.986375
 - xlnet+electra-base-discriminator+chinese-roberta-wwm-ext+albert_chinese_base++eleclongformer-chinese-base：0.98575
 - xlnet+electra-base-discriminator+chinese-roberta-wwm-ext+albert_chinese_base+longformer-chinese-base+hfl/chinese-electra-base-generator：0.9855
+
+## 失败的尝试
+- 猜想不同类别下的表头可能不一样，所以对应文件`process_v8.py` 处理文本的时候拼接顺序为 文件名 表头名colname 以及sheetname 但是实验结果发现非常差，成绩只有0.90-0.92
