@@ -105,5 +105,5 @@ sub['label']=sub['label'].map(label_index_inverse)
 print(sub.shape)
 print(sub.head(10))
 
-np.save('result/chinese-roberta-wwm-ext_p3.npy', raw_outputs)
-sub.to_csv('result/chinese-roberta-wwm-ext_p3.csv', index=False)
+np.save('result/10_chinese-roberta-wwm-ext_p3.npy', raw_outputs)
+sub.to_csv('result/10_chinese-roberta-wwm-ext_p3.csv', index=False)

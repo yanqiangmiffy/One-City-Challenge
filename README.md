@@ -15,6 +15,8 @@
 - longformer-chinese-base 0.9825
 - hfl/chinese-electra-base-generator 0.93
 - chinese-roberta-wwm-ext_p3.csv 0.9845+
+
+
 融合：
 - xlnet+albert+roberta_www_p3+chinese_roberta_p6:0.985=65
 - xlnet+electra-base-discriminator+chinese-roberta-wwm-ext+albert_chinese_base+elec：0.986375
