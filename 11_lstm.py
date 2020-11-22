@@ -30,6 +30,8 @@ from catboost import CatBoostClassifier
 from sklearn import metrics
 from sklearn.model_selection import StratifiedKFold
 import time
+from pandarallel import pandarallel
+pandarallel.initialize()
 
 warnings.filterwarnings('ignore')
 
@@ -117,8 +119,8 @@ if __name__ == "__main__":
 
     train_df['text'] = train_df['text'].apply(lambda x: get_clean(x))
     test_df['text'] = test_df['text'].apply(lambda x: get_clean(x))
-    train_df['text'] = train_df['text'].progress_apply(tokenizer)
-    test_df['text'] = test_df['text'].progress_apply(tokenizer)
+    train_df['text'] = train_df['text'].parallel_apply(tokenizer)
+    test_df['text'] = test_df['text'].parallel_apply(tokenizer)
     test_df['label'] = -1
     df_data = train_df.append(test_df, ignore_index=True)
     

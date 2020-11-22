@@ -19,7 +19,9 @@ elec_gen=np.load('result/06_chinese-electra-base-gen.npy')
 roberta_base=np.load('result/07_roberta_base.npy')
 roberta_len160_p3=np.load('result/10_chinese-roberta-wwm-ext_p3.npy')
 lgb=np.load('result/lgb.npy')
-pred=xlnet+albert+roberta_p3+roberta_p6+lgb
+erine=np.load('result/ernie.npy')
+
+pred=xlnet+albert+roberta_p3+roberta_p6+lgb+erine
 #print(xlnet)
 #print(pred)
 #pred=elec
