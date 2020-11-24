@@ -20,8 +20,12 @@ roberta_base=np.load('result/07_roberta_base.npy')
 roberta_len160_p3=np.load('result/10_chinese-roberta-wwm-ext_p3.npy')
 lgb=np.load('result/lgb.npy')
 erine=np.load('result/ernie.npy')
-
-pred=xlnet+albert+roberta_p3+roberta_p6+lgb+erine
+lstm=np.load('result/test_sub_5fold_lstm_0.9050113902584387.npy')
+paddle_bert=np.load('result/bert.npy') # 0.98
+bert=np.load('result/14_bert.npy')
+gpt=np.load('result/15_gpt2.npy') # 0.97
+print(lstm)
+pred=xlnet+albert+roberta_p3+roberta_p6+elec+longformer+roberta_base+roberta_len160_p3+lgb+lstm+bert+paddle_bert
 #print(xlnet)
 #print(pred)
 #pred=elec
