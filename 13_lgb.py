@@ -1,18 +1,56 @@
-import pandas as pd
-import numpy as np
-import os
-from tqdm import tqdm, trange
-import lightgbm
-from sklearn.model_selection import train_test_split, ShuffleSplit, StratifiedKFold
-from sklearn.metrics import f1_score
-from sklearn.linear_model import LogisticRegression
-from sklearn.feature_extraction.text import TfidfVectorizer
 import re
+
 import jieba
+import lightgbm
+import numpy as np
+import pandas as pd
+from ltp import LTP
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import f1_score
+from sklearn.model_selection import StratifiedKFold
+from tqdm import tqdm
+
+ltp = LTP()
 
 tqdm.pandas()
-train_df = pd.read_csv('data/train_set.csv')
-test_df = pd.read_csv('data/test_set.csv')
+train_df = pd.read_csv('data/train_content.csv')
+test_df = pd.read_csv('data/test_content.csv')
+
+train_text = pd.read_csv('data/train_set.csv')['text']
+test_text = pd.read_csv('data/test_set.csv')['text']
+
+train_df['text'] = train_text
+test_df['text'] = test_text
+del train_text, test_text
+label_index = {
+    '工业': 0,
+    '文化休闲': 1,
+    '教育科技': 2,
+    '医疗卫生': 3,
+    '文秘行政': 4,
+    '生态环境': 5,
+    '城乡建设': 6,
+    '农业畜牧业': 7,
+    '经济管理': 8,
+    '交通运输': 9,
+    '政法监察': 10,
+    '财税金融': 11,
+    '劳动人事': 12,
+    '旅游服务': 13,
+    '资源能源': 14,
+    '商业贸易': 15,
+    '气象水文测绘地震地理': 16,
+    '民政社区': 17,
+    '信息产业': 18,
+    '外交外事': 19}
+
+train_df['label'] = train_df['label'].map(label_index)
+
+
+def get_vector(text):
+    _, hidden = ltp.seg([text])
+    article_vector = hidden['word_cls'].reshape(-1, 256).cpu().numpy().tolist()[0]
+    return article_vector
 
 
 def get_clean(text):
@@ -29,18 +67,50 @@ def tokenizer(text):
     return text
 
 
+print("提取ltp vec")
+# train_vectors = []
+# for index, row in tqdm(train_df.iterrows()):
+#    _, hidden = ltp.seg([row.filename_text])
+#    train_vectors.append(hidden['word_cls'].reshape(-1, 256).cpu().numpy().tolist()[0])
+# train_vector_df = pd.DataFrame(train_vectors, columns=['vec_{}'.format(i) for i in range(256)])
+
+# train_vector_df.to_csv('data/train_vector_df.csv',index=None)
+train_vector_df = pd.read_csv('data/train_vector_df.csv')
+
+# test_vectors = []
+# for index, row in tqdm(test_df.iterrows()):
+#    _, hidden = ltp.seg([row.filename_text])
+#    test_vectors.append(hidden['word_cls'].reshape(-1, 256).cpu().numpy().tolist()[0])
+# test_vector_df = pd.DataFrame(test_vectors, columns=['vec_{}'.format(i) for i in range(256)])
+# test_vector_df.to_csv('data/test_vector_df.csv',index=None)
+test_vector_df = pd.read_csv('data/test_vector_df.csv')
+
+df_text = pd.concat([train_df, test_df], axis=0).reset_index(drop=True)
+
+print("提取tfidfvec")
 train_df['text'] = train_df['text'].apply(lambda x: get_clean(x))
 test_df['text'] = test_df['text'].apply(lambda x: get_clean(x))
 train_df['text'] = train_df['text'].progress_apply(tokenizer)
 test_df['text'] = test_df['text'].progress_apply(tokenizer)
-
-df_text = pd.concat([train_df, test_df], axis=0).reset_index(drop=True)
-tfidf = TfidfVectorizer(max_df=0.98, min_df=2, ngram_range=(1, 2),
-        max_features=160000, sublinear_tf=True)
+tfidf = TfidfVectorizer(max_df=0.98, min_df=2, ngram_range=(2, 3),
+                        max_features=8000, sublinear_tf=True)
 tfidf.fit(df_text.text.values)
+
 X = tfidf.transform(train_df.text.values)  # (60000, 61330)
 print(X.shape)
+df1 = pd.DataFrame(X.toarray(), columns=tfidf.get_feature_names())
+train_df = pd.concat([train_df, df1, train_vector_df], axis=1)
+
+test_x = tfidf.transform(test_df.text.values)
+df2 = pd.DataFrame(test_x.toarray(), columns=tfidf.get_feature_names())
+test_df = pd.concat([test_df, df2, test_vector_df])
+
+no_feas = ['filename', 'label', 'text', 'filename_text', 'sheet_names_text', 'column_names_text', 'processed_text']
+features = [fea for fea in train_df.columns if fea not in no_feas]
+
+X = train_df[features].values
 Y = train_df.label.values
+print(X.shape)
 skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=2020)
 
 params = {
@@ -109,8 +179,7 @@ for index_, (train_ind, test_ind) in enumerate(skf.split(X, Y)):
 
     print("=" * 64)
 
-test = tfidf.transform(test_df.text.values)
-
+test = test_df[features]
 pred = np.zeros((8000, 20))
 t_X = []
 for m in tqdm(models):
@@ -143,5 +212,4 @@ sub = pd.read_csv('data/submit_example_test1.csv')[['filename']]
 sub['label'] = np.argmax(pred, axis=1)
 sub['label'] = sub['label'].map(label_index_inverse)
 print(sub.shape)
-sub.to_csv('result/lgb.csv', index=False)
 

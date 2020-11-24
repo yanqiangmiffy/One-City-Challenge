@@ -15,7 +15,10 @@
 - longformer-chinese-base 0.9825
 - hfl/chinese-electra-base-generator 0.93
 - chinese-roberta-wwm-ext_p3.csv 0.9845+
-
+- lgb 0.92
+- ernie 0.97 paddle
+- lstm 0.96
+- bert 0.9815 paddle
 
 融合：
 - xlnet+albert+roberta_www_p3+chinese_roberta_p6:0.985=65
