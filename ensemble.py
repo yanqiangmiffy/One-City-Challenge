@@ -23,8 +23,9 @@ erine=np.load('result/ernie.npy')
 lstm=np.load('result/test_sub_5fold_lstm_0.9050113902584387.npy')
 paddle_bert=np.load('result/bert.npy') # 0.98
 bert=np.load('result/14_bert.npy')
+gpt=np.load('result/15_gpt2.npy')
 print(lstm)
-pred=xlnet+albert+roberta_p3+roberta_p6+elec+longformer+roberta_base+roberta_len160_p3+lgb+lstm+bert+paddle_bert
+pred=xlnet+albert+roberta_p3+roberta_p6+elec+longformer+roberta_base+roberta_len160_p3+lgb+lstm+bert+paddle_bert+gpt
 #print(xlnet)
 #print(pred)
 #pred=elec

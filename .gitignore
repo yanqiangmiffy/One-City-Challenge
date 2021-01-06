@@ -9,3 +9,4 @@ outputs/
 *.txt
 runs/
 logs/
+caches/

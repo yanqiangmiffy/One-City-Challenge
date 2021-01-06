@@ -24,13 +24,14 @@ def get_clean(text):
 
 
 def tokenizer(text):
+    text=str(text)
     text = " ".join([w for w in jieba.cut(text) if w][:300])
     text = " ".join(text.split())
     return text
 
 
-train_df['text'] = train_df['text'].apply(lambda x: get_clean(x))
-test_df['text'] = test_df['text'].apply(lambda x: get_clean(x))
+#train_df['text'] = train_df['text'].apply(lambda x: get_clean(x))
+#test_df['text'] = test_df['text'].apply(lambda x: get_clean(x))
 train_df['text'] = train_df['text'].progress_apply(tokenizer)
 test_df['text'] = test_df['text'].progress_apply(tokenizer)
 
@@ -111,7 +112,7 @@ for index_, (train_ind, test_ind) in enumerate(skf.split(X, Y)):
 
 test = tfidf.transform(test_df.text.values)
 
-pred = np.zeros((8000, 20))
+pred = np.zeros((len(test_df), 20))
 t_X = []
 for m in tqdm(models):
     pred += m[1].predict_proba(test) / 5
@@ -139,7 +140,7 @@ label_index_inverse = {
     17: '民政社区',
     18: '信息产业',
     19: '外交外事'}
-sub = pd.read_csv('data/submit_example_test1.csv')[['filename']]
+sub = pd.read_csv('data/submit_example_test2.csv')[['filename']]
 sub['label'] = np.argmax(pred, axis=1)
 sub['label'] = sub['label'].map(label_index_inverse)
 print(sub.shape)

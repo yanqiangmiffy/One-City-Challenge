@@ -112,13 +112,14 @@ if __name__ == "__main__":
 
 
     def tokenizer(text):
+        text=str(text)
         text=" ".join([w for w in jieba.cut(text) if w])
         text=" ".join(text.split())
         return text
 
 
-    train_df['text'] = train_df['text'].apply(lambda x: get_clean(x))
-    test_df['text'] = test_df['text'].apply(lambda x: get_clean(x))
+    #train_df['text'] = train_df['text'].apply(lambda x: get_clean(x))
+    #test_df['text'] = test_df['text'].apply(lambda x: get_clean(x))
     train_df['text'] = train_df['text'].parallel_apply(tokenizer)
     test_df['text'] = test_df['text'].parallel_apply(tokenizer)
     test_df['label'] = -1
@@ -129,7 +130,7 @@ if __name__ == "__main__":
     '''保留最大词数: None为不限制'''
     max_words_num = 30000
     '''序列长度'''
-    seq_len = 1000
+    seq_len = 300
     '''embedding向量维度'''
     embedding_dim = 128
     '''序列字段名'''
@@ -222,7 +223,8 @@ if __name__ == "__main__":
     np.save(f"./result/sub_5fold_lstm_{f1score}.npy", test_pred)
     np.save(f"./result/sub_5fold_lstm_{f1score}.npy", oof_pred)
 
-    sub = pd.DataFrame()
+    #sub = pd.DataFrame()
+    sub = pd.read_csv('data/submit_example_test2.csv')[['filename']]
     sub['label'] = np.argmax(test_pred, axis=1)
     sub.to_csv(f"./result/lstm_res.csv", index=False)
     print("End")
